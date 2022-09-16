@@ -5,33 +5,45 @@ const d = document,
   $main = d.getElementById('main'),
   $squares = d.createElement('div');
 
-$squares.setAttribute('id', 'squares');
-
 const isValidNumber = (number) => {
   if (typeof number === 'number' && number >= 1 && number <= 100) return true;
   else return false;
 };
 
 const notify = (nameClass, message) => {
-  $notify.classList.add(nameClass);
+  $notify.className = nameClass;
   $notify.textContent = message;
 };
 
+const removePreviousSquares = () => ($squares.innerHTML = null);
+
 const getStyles = (number) => {
-  const sizeSquare = '',
-    squares = `
-    width: ${9.6 * number}px;
-    height: ${9.6 * number}px;
-    margin: 0 auto;
+  const sizeContainer = $main.offsetWidth,
+    sizeSquare = sizeContainer / number,
+    sizeSquares = sizeSquare * number;
+  removePreviousSquares();
+  if (sizeSquare < 9.6) return { max: Math.floor(sizeContainer / 9.6) };
+  const squares = `
+    box-sizing: border-box;
+    width: ${sizeSquares}px;
+    height: ${sizeSquares}px;
+    max-width: 960px;
+    max-height: 960px;
     display: flex;
     flex-wrap: wrap;
   `,
-    square = `width: 9.6px; height: 9.6px; border: 1px solid #000;`;
+    square = `
+      box-sizing: border-box;
+      width: ${sizeSquare}px;
+      height: ${sizeSquare}px;
+      min-width: 9.6px;
+      min-height: 9.6px;
+      border: 1px solid #f0f0f0;
+    `;
   return { squares, square };
 };
 
-const setSquares = (numberSquares) => {
-  const styles = getStyles(numberSquares);
+const setSquares = (styles, numberSquares) => {
   for (let i = 0; i < numberSquares * numberSquares; i++) {
     const $square = d.createElement('div');
     $square.setAttribute('style', styles.square);
@@ -47,10 +59,21 @@ const getNumberSquares = () => {
     'Enter a integer number between one and one hundred (1 - 100)'
   );
   if (isValidNumber(+number)) {
-    setSquares(number);
-  } else {
+    const styles = getStyles(number);
+    if (styles.max)
+      notify(
+        'error',
+        `In this device the maximum number allowed is ${styles.max}`
+      );
+    else setSquares(styles, number);
+  } else
     notify('error', 'Enter a number between one and one hundred (1 - 100)');
-  }
 };
 
+$squares.setAttribute('id', 'squares');
 $btn.addEventListener('click', getNumberSquares);
+
+{
+  const styles = getStyles(16);
+  setSquares(styles, 16);
+}
