@@ -19,21 +19,22 @@ const removePreviousSquares = () => ($squares.innerHTML = null);
 
 const getStyles = (number) => {
   const sizeContainer = $main.offsetWidth,
-    sizeSquare = sizeContainer / number,
+    sizeSquare = sizeContainer / number > 16 ? 16 : sizeContainer / number,
     sizeSquares = sizeSquare * number;
   removePreviousSquares();
   if (sizeSquare < 9.6) return { max: Math.floor(sizeContainer / 9.6) };
   const squares = `
-    box-sizing: border-box;
+    background-color: #fff;
     width: ${sizeSquares}px;
     height: ${sizeSquares}px;
     max-width: 960px;
     max-height: 960px;
+    margin-left: auto;
+    margin-right: auto;
     display: flex;
     flex-wrap: wrap;
   `,
     square = `
-      box-sizing: border-box;
       width: ${sizeSquare}px;
       height: ${sizeSquare}px;
       min-width: 9.6px;
@@ -43,15 +44,38 @@ const getStyles = (number) => {
   return { squares, square };
 };
 
+const getRandomColor = () => {};
+
+const squareListeners = () => {
+  const $squares = d.querySelectorAll('[data-name="square"]');
+  console.log('$squares :>> ', $squares);
+  for (const $square of $squares) {
+    $square.addEventListener('mouseover', () => {
+      //const colorRandom = getRandomColor()
+      //$square.classList.add('bg-black');
+      if ($square.style.backgroundColor) {
+        console.log('true', $square.style.backgroundColor);
+      } else {
+        $square.style.setProperty(
+          'background-color',
+          'rgba(100, 100, 100, 0.1)'
+        );
+      }
+    });
+  }
+};
+
 const setSquares = (styles, numberSquares) => {
   for (let i = 0; i < numberSquares * numberSquares; i++) {
     const $square = d.createElement('div');
     $square.setAttribute('style', styles.square);
+    $square.dataset.name = 'square';
     $squares.appendChild($square);
   }
   $squares.setAttribute('style', styles.squares);
   $main.appendChild($squares);
   notify('success', `New grid of ${numberSquares}x${numberSquares} generated!`);
+  squareListeners();
 };
 
 const getNumberSquares = () => {
