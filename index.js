@@ -54,12 +54,21 @@ const squareListeners = () => {
       //const colorRandom = getRandomColor()
       //$square.classList.add('bg-black');
       if ($square.style.backgroundColor) {
-        console.log('true', $square.style.backgroundColor);
+        let opacity = $square.style.backgroundColor;
+        opacity = opacity.substring(opacity.length - 1, opacity.length - 2);
+        console.log('opacity :>> ', opacity);
+        if (opacity === '9') {
+          $square.style.setProperty('background-color', '#000');
+        } else {
+          opacity =
+            +opacity.substring(opacity.length - 1, opacity.length - 2) + 1;
+          $square.style.setProperty(
+            'background-color',
+            `rgba(10, 20, 30, 0.${opacity})`
+          );
+        }
       } else {
-        $square.style.setProperty(
-          'background-color',
-          'rgba(100, 100, 100, 0.1)'
-        );
+        $square.style.setProperty('background-color', 'rgba(10, 20, 30, 0.1)');
       }
     });
   }
