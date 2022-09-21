@@ -44,7 +44,12 @@ const getStyles = (number) => {
   return { squares, square };
 };
 
-const getRandomColor = () => {};
+const getRandomColor = () => {
+  const red = Math.floor(Math.random() * 256);
+  const green = Math.floor(Math.random() * 256);
+  const blue = Math.floor(Math.random() * 256);
+  return [red, green, blue];
+};
 
 const squareListeners = () => {
   const $squares = d.querySelectorAll('[data-name="square"]');
@@ -53,22 +58,31 @@ const squareListeners = () => {
     $square.addEventListener('mouseover', () => {
       //const colorRandom = getRandomColor()
       //$square.classList.add('bg-black');
+      console.log(
+        '$square.style.backgroundColor :>> ',
+        $square.style.backgroundColor
+      );
       if ($square.style.backgroundColor) {
         let opacity = $square.style.backgroundColor;
         opacity = opacity.substring(opacity.length - 1, opacity.length - 2);
         console.log('opacity :>> ', opacity);
-        if (opacity === '9') {
+        if (opacity === '0') return;
+        else if (opacity === '9')
           $square.style.setProperty('background-color', '#000');
-        } else {
-          opacity =
-            +opacity.substring(opacity.length - 1, opacity.length - 2) + 1;
+        else {
+          opacity = +opacity + 1;
+          const rgb = getRandomColor();
           $square.style.setProperty(
             'background-color',
-            `rgba(10, 20, 30, 0.${opacity})`
+            `rgba(${rgb[0]}, ${rgb[1]},${rgb[2]},0.${opacity})`
           );
         }
       } else {
-        $square.style.setProperty('background-color', 'rgba(10, 20, 30, 0.1)');
+        const rgb = getRandomColor();
+        $square.style.setProperty(
+          'background-color',
+          `rgba(${rgb[0]}, ${rgb[1]},${rgb[2]},0.1)`
+        );
       }
     });
   }
